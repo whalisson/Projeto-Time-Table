@@ -7,9 +7,10 @@
  2. Django 5.0 ou superior
  
 #### Execute na sua máquina local:
-* `git clone `
-* `cd M1`
+* `git clone https://github.com/whalisson/Projeto-Time-Table.git`
+* `cd Projeto-Time-Table`
 * `python -m venv venv`
+*  `venv\Scripts\activate`
 * `pip install django`
 * `python manage.py runserver`
 
