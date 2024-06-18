@@ -1,0 +1,18 @@
+
+
+{% extends 'base.html' %}
+{%block content%}
+{% load static %}
+<form method="post">
+	{% csrf_token %}
+	<fieldset>
+		<h1 class="tablink" onclick="openPage('new')" id="defaultOpen">Add Hora Reunião</h1>
+		<a href="{% url 'editmeetingtime' %}"><h1 class="tablink" onclick="openPage('edit')" id="link_to_edit">Editar Hora Reunião</h1></a>
+		<div class="tabcontent" id="new">
+			{{ form.as_p }}
+		<input type="submit" value="Enviar" class="submit">
+		</div>
+	</fieldset>
+</form>
+
+{%endblock%}
