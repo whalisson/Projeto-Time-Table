@@ -3,8 +3,8 @@
 ### Um gerador de horários inteligente que cria horários universitários usando  `Algoritmo Genético`.
   
  #### Dependências:
- 1. python 3.12 ou superior
- 2. Django 5.0 ou superior
+ 1. python 3.7 ou superior
+ 2. Django 2.2 ou superior
  
 #### Execute na sua máquina local:
 * `git clone https://github.com/whalisson/Projeto-Time-Table.git`
