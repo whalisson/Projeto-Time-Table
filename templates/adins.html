@@ -3,16 +3,16 @@
 {% block content %}
 {% load static %}
 <form method="post">
-	{% csrf_token %}
-	<fieldset>
-		<h1 class="tablink" onclick="openPage('new')" id="defaultOpen">Add Professor</h1>
-		<a href="{% url 'editinstructor' %}"><h1 class="tablink" onclick="openPage('edit')" id="link_to_edit">Editar Professor</h1></a>
-		<div class="tabcontent" id="new">
-			{{ form.as_p }}
-		<input type="submit" value="Enviar" class="submit">
-		</div>
-	</fieldset>
+    {% csrf_token %}
+    <fieldset>
+        <h1 class="tablink" onclick="openPage('new')" id="defaultOpen">Adicionar Professor</h1>
+        <a href="{% url 'editinstructor' %}">
+            <h1 class="tablink" onclick="openPage('edit')" id="link_to_edit">Editar Professor</h1>
+        </a>
+        <div class="tabcontent" id="new">
+            {{ form.as_p }}
+            <input type="submit" value="Enviar" class="submit">
+        </div>
+    </fieldset>
 </form>
-
-</div>
 {% endblock %}
