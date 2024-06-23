@@ -52,50 +52,48 @@ class Schedule:
         return self._fitness
 
     def initialize(self):
-        sections = Section.objects.all()  # Todas as seções
+        sections = Section.objects.all()
         for section in sections:
-            dept = section.department  # Departamento da seção
-            n = section.num_class_in_week  # Número de aulas na semana
-            if n <= len(MeetingTime.objects.all()):
-                courses = dept.courses.all()  # Cursos do departamento
-                for course in courses:
-                    for i in range(n // len(courses)):
-                        crs_inst = course.instructors.all()  # Instrutores do curso
-                        newClass = Class(self._classNumb, dept, section.section_id, course)  # Nova classe
-                        self._classNumb += 1
-                        newClass.set_meetingTime(data.get_meetingTimes()[rnd.randrange(0, len(MeetingTime.objects.all()))])
-                        newClass.set_room(data.get_rooms()[rnd.randrange(0, len(data.get_rooms()))])
-                        newClass.set_instructor(crs_inst[rnd.randrange(0, len(crs_inst))])
-                        self._classes.append(newClass)
-            else:
-                n = len(MeetingTime.objects.all())  # Usa todos os horários disponíveis
-                courses = dept.courses.all()
-                for course in courses:
-                    for i in range(n // len(courses)):
-                        crs_inst = course.instructors.all()
-                        newClass = Class(self._classNumb, dept, section.section_id, course)
-                        self._classNumb += 1
-                        newClass.set_meetingTime(data.get_meetingTimes()[rnd.randrange(0, len(MeetingTime.objects.all()))])
-                        newClass.set_room(data.get_rooms()[rnd.randrange(0, len(data.get_rooms()))])
-                        newClass.set_instructor(crs_inst[rnd.randrange(0, len(crs_inst))])
-                        self._classes.append(newClass)
+            dept = section.department
+            n = section.num_class_in_week
+            courses = dept.courses.all()
+            for course in courses:
+                for i in range(n // len(courses)):
+                    crs_inst = course.instructors.all()
+                    newClass = Class(self._classNumb, dept, section.section_id, course)
+                    self._classNumb += 1
+                    meeting_time = data.get_meetingTimes()[rnd.randrange(0, len(MeetingTime.objects.all()))]
+                    
+                    # Verifica disponibilidade opcional do instrutor
+                    available_instructors = [inst for inst in crs_inst if not inst.available_times.exists() or meeting_time in inst.available_times.all()]
+                    if not available_instructors:
+                        available_instructors = crs_inst  # Se nenhum instrutor disponível, use todos os instrutores
+
+                    newClass.set_meetingTime(meeting_time)
+                    newClass.set_room(data.get_rooms()[rnd.randrange(0, len(data.get_rooms()))])
+                    newClass.set_instructor(available_instructors[rnd.randrange(0, len(available_instructors))])
+                    self._classes.append(newClass)
         return self
 
+
     def calculate_fitness(self):
-        self._numberOfConflicts = 0  # Inicializa contagem de conflitos
+        self._numberOfConflicts = 0
         classes = self.get_classes()
         for i in range(len(classes)):
-            if classes[i].room.seating_capacity < int(classes[i].course.max_numb_students):  # Verifica capacidade da sala
+            if classes[i].room.seating_capacity < int(classes[i].course.max_numb_students):
+                self._numberOfConflicts += 1
+            if classes[i].instructor.available_times.exists() and classes[i].meeting_time not in classes[i].instructor.available_times.all():
                 self._numberOfConflicts += 1
             for j in range(len(classes)):
                 if j >= i:
                     if (classes[i].meeting_time == classes[j].meeting_time) and \
                             (classes[i].section_id != classes[j].section_id) and (classes[i].section == classes[j].section):
-                        if classes[i].room == classes[j].room:  # Conflito de sala
+                        if classes[i].room == classes[j].room:
                             self._numberOfConflicts += 1
-                        if classes[i].instructor == classes[j].instructor:  # Conflito de instrutor
+                        if classes[i].instructor == classes[j].instructor:
                             self._numberOfConflicts += 1
-        return 1 / (1.0 * self._numberOfConflicts + 1)  # Retorna a fitness inversamente proporcional aos conflitos
+        return 1 / (1.0 * self._numberOfConflicts + 1)
+
 
 # Classe para representar uma população de cronogramas
 class Population:

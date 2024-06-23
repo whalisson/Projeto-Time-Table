@@ -17,15 +17,25 @@ class RoomForm(ModelForm):
 
 
 class InstructorForm(ModelForm):
+
+    available_times = forms.ModelMultipleChoiceField(
+        queryset=MeetingTime.objects.all(),
+        widget=forms.CheckboxSelectMultiple,
+        required=False,  # Campo opcional
+        label='Horários Disponíveis'  # Rótulo personalizado
+    )
     class Meta:
         model = Instructor
         fields = [
             'uid',
-            'name'
+            'name',
+            'available_times',
         ]
+        
         labels = {
             'uid': 'ProfessorID',
-            'name':'Nome do Professor'
+            'name':'Nome do Professor',
+            'available_times':'Horario disponivel',
         }
 
 class MeetingTimeForm(ModelForm):

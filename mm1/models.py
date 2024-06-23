@@ -40,13 +40,6 @@ class Room(models.Model):
         return self.r_number
 
 
-class Instructor(models.Model):
-    uid = models.CharField(max_length=6)
-    name = models.CharField(max_length=25)
-
-    def __str__(self):
-        return f'{self.uid} {self.name}'
-
 
 class MeetingTime(models.Model):
     pid = models.CharField(max_length=4, primary_key=True)
@@ -55,7 +48,13 @@ class MeetingTime(models.Model):
 
     def __str__(self):
         return f'{self.pid} {self.day} {self.time}'
-
+    
+class Instructor(models.Model):
+    uid = models.CharField(max_length=6)
+    name = models.CharField(max_length=25)
+    available_times = models.ManyToManyField(MeetingTime, blank=True)  # Adiciona a disponibilidade
+    def __str__(self):
+        return f'{self.uid} {self.name}'
 
 class Course(models.Model):
     course_number = models.CharField(max_length=5, primary_key=True)
