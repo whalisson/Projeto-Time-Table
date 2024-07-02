@@ -1,1 +1,1 @@
-web gunicorn she.wsgi: apllication --log-file -
+web gunicorn M1.wsgi: apllication --log-file -
