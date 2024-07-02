@@ -33,7 +33,7 @@ class TestIntegration(TestCase):
         population = Population(POPULATION_SIZE)
         geneticAlgorithm = GeneticAlgorithm()
         generation_num = 0
-        max_generations = 100  # Aumentando o número de gerações
+        max_generations = 100
 
         # Inicializa e ordena a população
         population.get_schedules().sort(key=lambda x: x.get_fitness(), reverse=True)
@@ -60,13 +60,13 @@ class TestIntegration(TestCase):
         for cls in schedule_classes:
             print(f"Instrutor: {cls.get_instructor()}, Horário: {cls.get_meetingTime()}, Sala: {cls.get_room()}")
 
-        # Assertivas para verificar se o cronograma é gerado corretamente
+        # Verifica se o cronograma é gerado corretamente
         self.assertTrue(generation_num > 0, "Deve ter pelo menos uma geração para encontrar o horário ideal.")
         self.assertEqual(len(schedule_classes), 4, "Número de aulas no cronograma gerado está incorreto.")
         self.assertTrue(best_schedule.get_fitness() == 1.0 or generation_num == max_generations,
                         "Não conseguiu gerar um cronograma ideal.")
 
-        # Verificar se todas as classes têm todos os atributos configurados corretamente
+        # Verifica se todas as classes têm todos os atributos configurados corretamente
         for cls in schedule_classes:
             self.assertIsNotNone(cls.get_instructor(), "Instrutor não atribuído.")
             self.assertIsNotNone(cls.get_meetingTime(), "Horário não atribuído.")
